@@ -1,3 +1,21 @@
+/*
+    This file ( main.cpp ) is part of MinimalSerialMonitor.
+    (C) 31.1.2021 Fidoriel
+
+    MinimalSerialMonitor is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    MinimalSerialMonitor is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with MinimalSerialMonitor.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "wx/wx.h"
 #include "wx/grid.h"
 #include "wx/sizer.h"
@@ -205,7 +223,6 @@ MyFrame::MyFrame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName(), wxDefault
     lineReturnAry.Add( "none" );
     lineReturnAry.Add( "new Line" );
     lineReturnAry.Add( "CR" );
-    lineReturnAry.Add( "CR and NR" );
 
     lineEnd = new wxChoice( mainPanel, ID_NewLineChange, wxDefaultPosition, wxDefaultSize, lineReturnAry );
     lineEnd->SetSelection( 1 );
@@ -405,19 +422,12 @@ void MyFrame::OnIdle( wxIdleEvent& event )
 
 void MyFrame::OnNewLineChange( wxCommandEvent& event )
 {
-    if ( event.GetSelection() == 0 )
+    if ( lineEnd->GetSelection() == 0 )
         this->lineEndStr = "";
-    if ( event.GetSelection() == 1 )
+    if ( lineEnd->GetSelection() == 1 )
         this->lineEndStr = "\n";
-    if ( event.GetSelection() == 2 )
+    if ( lineEnd->GetSelection() == 2 )
         this->lineEndStr = "\r";
-    if ( event.GetSelection() == 3 )
-        this->lineEndStr = "\r\n";
-    else
-    {
-        lineEnd->SetStringSelection( "new Line" );
-        this->lineEndStr = "\n"; 
-    }
 }
 
 void MyFrame::OnExit( wxCommandEvent& event )
