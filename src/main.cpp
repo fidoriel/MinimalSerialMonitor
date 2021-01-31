@@ -194,8 +194,8 @@ MyFrame::MyFrame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName(), wxDefault
     portCh = new wxChoice( mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, portAry );
     this->RefreshSerial();
     if ( portCh->GetCount() > 0 )
-        portCh->SetSelection( 0 );
-        
+        portCh->SetSelection( portCh->GetCount() - 1 );
+
     baudCh = new wxChoice( mainPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, baudAry );
     baudCh->SetStringSelection( "9600" );
     conBtn = new wxButton( mainPanel, ID_Connect, "Connect", wxDefaultPosition, wxSize( 95, -1) );
