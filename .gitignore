@@ -1,0 +1,5 @@
+
+.DS_Store
+build/
+src/test.c.tmp
+.vscode/settings.json

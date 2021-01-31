@@ -1,0 +1,8 @@
+aaaaaaaa ICON "AppIcon.ico"
+
+// this icon is used with wxFrame::SetIcon()
+icon ICON "AppIcon.ico"
+
+// manifest style for Win XP
+#define wxUSE_NO_MANIFEST 0
+#include "wx/msw/wx.rc"
