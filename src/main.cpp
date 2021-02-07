@@ -64,6 +64,8 @@ class MyFrame : public wxFrame
         void OnNewLineChange( wxCommandEvent& event );
         void OnExit( wxCommandEvent& event );
         void OnSave( wxCommandEvent& event );
+        void OnKeyPress( wxKeyEvent& event );
+        void Send();
 
         wxMenuBar* menuBar;
         wxMenu* fileMenu;
@@ -94,6 +96,9 @@ class MyFrame : public wxFrame
         wxChoice* lineEnd;
         wxArrayString lineReturnAry;
         wxString lineEndStr;
+
+        wxArrayString history;
+        size_t currentPosHist;
 
         bool isConnected;
         bool isFreeze;
@@ -192,6 +197,8 @@ MyFrame::MyFrame() : wxFrame( NULL, wxID_ANY, wxGetApp().GetAppName(), wxDefault
     toSend = new wxTextCtrl( mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize );
     sendSizer->Add( toSend, 1, wxALL | wxEXPAND, 5);
     sendSizer->Add( sendBtn, 0, wxALL, 5 );
+
+    toSend->Bind( wxEVT_KEY_DOWN, &MyFrame::OnKeyPress, this );
 
     rcvData = new wxTextCtrl( mainPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
     rcvData->SetEditable( false );
@@ -326,10 +333,14 @@ void MyFrame::loadPorts()
 
 void MyFrame::OnSend( wxCommandEvent& event )
 {
-    if ( this->isConnected )
+    this->Send();
+}
+
+void MyFrame::Send()
+{
+    if ( this->isConnected && !this->toSend->GetValue().IsEmpty())
     {
         std::string serialSignal = std::string( this->toSend->GetValue().mb_str() );
-        this->toSend->Clear();
         char sendSignal[ 4096 ];
 
         copy( serialSignal.begin(), serialSignal.end(), sendSignal );
@@ -342,6 +353,10 @@ void MyFrame::OnSend( wxCommandEvent& event )
             this->SetStatusText( "Write Succesful", 1 );
         else
             this->SetStatusText( "Write Error", 1 );
+
+        this->currentPosHist = history.GetCount();
+        this->history.Add( this->toSend->GetValue() );
+        this->toSend->Clear();
     }
 }
 
@@ -452,4 +467,46 @@ void MyFrame::OnSave( wxCommandEvent& event )
 MyFrame::~MyFrame()
 {
     close_port( this->connection );
+}
+
+void MyFrame::OnKeyPress( wxKeyEvent& event )
+{
+    event.Skip();
+
+    switch ( event.GetKeyCode() )
+    {
+        case WXK_UP:
+        case WXK_NUMPAD_UP:
+
+            if ( this->currentPosHist > 0 )
+                this->currentPosHist -= 1;
+            
+            toSend->SetValue( history.Item( this->currentPosHist ) );
+            event.Skip( false );
+            break;
+        
+        case WXK_DOWN:
+        case WXK_NUMPAD_DOWN:
+            this->currentPosHist += 1;
+
+            if ( this->currentPosHist >= history.GetCount() )
+            {
+                this->currentPosHist = history.GetCount();
+                toSend->Clear();
+            }
+
+            else
+            {
+                toSend->SetValue( history.Item( this->currentPosHist ) );
+            }
+
+            event.Skip( false );
+            break;
+
+        case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
+            this->Send();
+            event.Skip( false );
+            break;
+    }
 }
