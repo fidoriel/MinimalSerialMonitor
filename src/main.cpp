@@ -473,11 +473,13 @@ void MyFrame::OnKeyPress( wxKeyEvent& event )
 {
     event.Skip();
 
+    if ( history.GetCount() == 0 )
+        return;
+
     switch ( event.GetKeyCode() )
     {
         case WXK_UP:
         case WXK_NUMPAD_UP:
-
             if ( this->currentPosHist > 0 )
                 this->currentPosHist -= 1;
             
