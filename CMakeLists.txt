@@ -45,7 +45,7 @@ set( CMAKE_CXX_STANDARD 11 )
 
 project( "MinimalSerialMonitor" )
 
-set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets-3.1.4" )
+set( WXWIDGETS_VERSION_IN_HOME_DIR "wxWidgets" )
 set( RELEASE 1 )
 
 message( "CXX Compiler: ${CMAKE_CXX_COMPILER}" )
